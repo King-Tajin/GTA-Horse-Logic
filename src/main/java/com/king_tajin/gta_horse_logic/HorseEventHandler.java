@@ -1,7 +1,9 @@
 package com.king_tajin.gta_horse_logic;
 
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -51,9 +53,11 @@ public class HorseEventHandler {
         }
 
         if (health <= maxHealth / 4) {
-            spawnParticles(horse, ParticleTypes.LARGE_SMOKE, 2);
+            spawnParticles(horse, ParticleTypes.CAMPFIRE_COSY_SMOKE, 1);
+            spawnParticles(horse, ParticleTypes.LARGE_SMOKE, 1);
         } else if (health <= maxHealth / 2) {
-            spawnParticles(horse, ParticleTypes.SMOKE, 2);
+            spawnParticles(horse, ParticleTypes.POOF, 1);
+            spawnParticles(horse, ParticleTypes.SMOKE, 1);
         }
     }
 
@@ -106,15 +110,23 @@ public class HorseEventHandler {
 
         dyingHorses.remove(horse.getUUID());
 
+        if (horse.isTamed() && horse.getOwner() != null) {
+            if (horse.getOwner() instanceof ServerPlayer owner) {
+                String horseName = horse.hasCustomName() ? horse.getCustomName().getString() : "Your horse";
+                owner.sendSystemMessage(Component.literal("§c" + horseName + " has exploded!"));
+            }
+        }
+
         boolean griefing = serverLevel.getGameRules().getBoolean(ModGameRules.RULE_HORSE_EXPLOSION_GRIEFING);
-        Level.ExplosionInteraction interaction = griefing ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE;
+        Level.ExplosionInteraction interaction = griefing ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE;
 
         serverLevel.explode(
                 horse,
                 horse.getX(),
                 horse.getY(),
                 horse.getZ(),
-                2.0f,
+                3.5f,
+                griefing,
                 interaction
         );
 
