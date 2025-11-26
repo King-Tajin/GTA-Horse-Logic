@@ -1,9 +1,12 @@
 package com.king_tajin.gta_horse_logic;
 
+import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -38,6 +41,19 @@ public class HorseEventHandler {
 
             if (!horse.isOnFire()) {
                 horse.setRemainingFireTicks(200);
+            }
+
+            if (timer % 15 == 0) {
+                serverLevel.playSound(
+                        null,
+                        horse.getX(),
+                        horse.getY(),
+                        horse.getZ(),
+                        SoundEvents.FIRE_EXTINGUISH,
+                        SoundSource.HOSTILE,
+                        0.5f,
+                        1.5f + (serverLevel.random.nextFloat() * 0.3f)
+                );
             }
 
             spawnParticles(horse, ParticleTypes.LARGE_SMOKE, 3);
@@ -132,5 +148,15 @@ public class HorseEventHandler {
 
         horse.setHealth(0.0f);
         horse.die(serverLevel.damageSources().explosion(null));
+        serverLevel.playSound(
+                null,
+                horse.getX(),
+                horse.getY(),
+                horse.getZ(),
+                SoundEvents.HORSE_DEATH,
+                SoundSource.HOSTILE,
+                1.0f,
+                1.0f
+        );
     }
 }
