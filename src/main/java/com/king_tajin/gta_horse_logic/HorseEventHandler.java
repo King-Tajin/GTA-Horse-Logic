@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class HorseEventHandler {
     private static final Map<UUID, Integer> dyingHorses = new HashMap<>();
-    private static final int DEATH_TIMER = 60; // 3 seconds (20 ticks per second)
+    private static final int DEATH_TIMER = 200;
 
     @SubscribeEvent
     public void onEntityTick(EntityTickEvent.Post event) {
