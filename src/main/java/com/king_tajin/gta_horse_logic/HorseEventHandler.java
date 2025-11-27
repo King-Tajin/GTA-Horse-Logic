@@ -77,7 +77,7 @@ public class HorseEventHandler {
     }
 
     @SubscribeEvent
-    public void onLivingDamage(LivingDamageEvent.Pre event) {
+    public void onLivingDamage(LivingDamageEvent event) {
         if (!(event.getEntity() instanceof AbstractHorse horse)) return;
         if (horse.level().isClientSide) return;
         if (!(horse.level() instanceof ServerLevel serverLevel)) return;
@@ -88,16 +88,16 @@ public class HorseEventHandler {
         }
 
         float health = horse.getHealth();
-        float damage = event.getNewDamage();
+        float damage = event.getAmount();
         UUID horseId = horse.getUUID();
 
         if (dyingHorses.containsKey(horseId)) {
-            event.setNewDamage(0);
+            event.setAmount(0);
             return;
         }
 
         if (health - damage <= 0) {
-            event.setNewDamage(health - 0.1f);
+            event.setAmount(health - 0.1f);
             dyingHorses.put(horseId, DEATH_TIMER);
         }
     }
