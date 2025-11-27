@@ -1,6 +1,5 @@
 package com.king_tajin.gta_horse_logic;
 
-import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
